@@ -1,0 +1,21 @@
+{
+  "generated_at_utc": "2026-10-24T17:31:16.993596+00:00",
+  "dataset": "NYC TLC Yellow Taxi",
+  "source_month": "2024-01",
+  "source_url": "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2024-01.parquet",
+  "sha256": "c4d59da7bbc8abaeeeb1727947ee93d9891a71acb42854bd80db1571b2030510",
+  "raw_rows": 2964624,
+  "valid_rows": 2926173,
+  "rejected_rows": 38451,
+  "rejected_ratio": 0.012969941550766641,
+  "gold_rows": 6947,
+  "gold_trip_count": 2926173,
+  "silver_total_amount_usd": "80302017.00",
+  "gold_gross_amount_usd": "80302017.00",
+  "rejection_reasons": {
+    "nonpositive_duration": 870,
+    "invalid_amount": 37563,
+    "outside_source_month": 18
+  },
+  "reconciliation_passed": true
+}

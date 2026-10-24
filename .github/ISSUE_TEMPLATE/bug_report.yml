@@ -1,0 +1,16 @@
+name: Bug report
+description: Report a reproducible pipeline failure
+title: "bug: "
+body:
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Command, Python version, source month and expected versus actual behavior. Remove secrets and personal paths.
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: Sanitized error and quality-report counts. Do not attach raw datasets.

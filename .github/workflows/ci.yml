@@ -1,0 +1,46 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        python: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+        with:
+          version: "0.13.4"
+          enable-cache: true
+      - run: uv python install ${{ matrix.python }}
+      - run: uv sync --frozen --extra dev --python ${{ matrix.python }}
+      - run: uv run --frozen ruff check src tests examples scripts
+      - run: uv run --frozen ruff format --check src tests examples scripts
+      - run: uv run --frozen pytest --cov --cov-fail-under=80 --cov-report=xml -q
+      - run: uv build
+      - name: Verify installed wheel and packaged SQL
+        shell: bash
+        run: |
+          uv venv /tmp/taxi-wheel --python ${{ matrix.python }}
+          uv pip install --python /tmp/taxi-wheel/bin/python dist/*.whl
+          cd /tmp
+          /tmp/taxi-wheel/bin/taxi --root /tmp/taxi-demo demo
+          /tmp/taxi-wheel/bin/taxi --root /tmp/taxi-demo verify
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: matrix.python == '3.12'
+        with:
+          name: validation-artifacts
+          path: |
+            coverage.xml
+            dist/*
+          retention-days: 7
